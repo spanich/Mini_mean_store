@@ -1,0 +1,200 @@
+<html ng-app="mini_mean">
+<head>
+	<title>Mini-Mean Store</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular-route.min.js"></script>
+    <script>
+    //Angular code here
+    var mini_mean = angular.module('mini_mean', ['ngRoute']);
+
+    //routes
+    mini_mean.config(function ($routeProvider){
+      $routeProvider
+        .when('/products', {
+          templateUrl: '/views/products.html'
+        })
+        .when('/orders', {
+          templateUrl: '/views/orders.html'
+        })
+        .when('/customers', {
+          templateUrl: '/views/customers.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        })
+    });
+
+    //DashController
+    
+    //CustomersController
+    mini_mean.controller("CustomersController", function($scope, CustomerFactory){
+        $scope.customers = [];
+
+      CustomerFactory.index(function(data){
+        $scope.customers = data;
+      })
+
+      // $scope.getcustomer = function (){
+        
+      // }
+
+      $scope.addcustomer = function(){
+        console.log($scope.new_customer);
+        CustomerFactory.addcustomer($scope.new_customer, function(customers){
+          $scope.customers = customers;
+          $scope.new_customer = {};
+        });
+      }
+
+    })
+
+    // ProductsController
+    mini_mean.controller("ProductsController", function($scope, ProductFactory){
+        $scope.products = [];
+        $scope.quantity = ["0", "1", "2", "3", "4", "5"];
+
+      ProductFactory.index(function(data){
+        $scope.products = data;
+       
+      })
+      
+      // $scope.getproduct = function (){
+        
+      // }
+
+      $scope.addproduct = function(){
+        // console.log($scope.new_product);
+        ProductFactory.addproduct($scope.new_product, function(data){
+          ProductFactory.index(function(data){
+            $scope.products=data;
+          });
+          $scope.new_product ={};
+        });
+      }
+
+    })
+
+    // OrdersController
+
+    mini_mean.controller("OrdersController", function($scope, OrderFactory, CustomerFactory){
+      $scope.orders = [];
+      $scope.customers=[];
+      $scope.prod=[];
+      $scope.quantity = [];
+
+      OrderFactory.index(function(data){
+        $scope.orders = data;
+        $scope.prod = ["Sneakers", "Apple", "Hat"];
+        $scope.quantity = ["0", "1", "2", "3", "4", "5"];
+      });
+
+      CustomerFactory.index(function(data){
+        $scope.customers = data;
+      })
+
+      $scope.getorder= function(){
+        [];
+      }
+
+      $scope.addorder = function(){
+          // console.log($scope.order);
+          OrderFactory.addorder($scope.order, function(data){
+          // $scope.orders = data;
+            OrderFactory.index(function(data){
+             $scope.orders = data;
+            });
+            $scope.order={};
+          })
+      }
+    })
+
+    //CustomerFactory
+    mini_mean.factory('CustomerFactory', function($http){
+      var factory = {};
+      var customers = [];
+
+      factory.index = function(callback) {
+        $http.get('/customers').success(function(output){
+          customers = output;
+          callback(customers);
+        });
+      }
+
+       factory.addcustomer = function(info, callback){
+
+        ($http.post('/customers', info).success(function(output){
+          console.log(info);
+          factory.index(callback);
+          customers=output;
+          callback(customers);
+        }))
+      }
+
+      return factory;
+    })
+
+
+
+
+    //ProductFactory
+    mini_mean.factory('ProductFactory', function($http){
+      var factory = {};
+      var products = [];
+
+      factory.index = function(callback) {
+        $http.get('/products').success(function(output){
+          products = output;
+          callback(products);
+        });
+      }
+
+      factory.addproduct = function(info, callback){
+
+        $http.post('/products', info).success(function(output){
+          console.log(info);
+          factory.index(callback);
+          products=output;
+          callback(products);
+        })
+      }
+
+      return factory;
+    })
+
+
+    //OrderFactory
+
+    mini_mean.factory('OrderFactory', function($http){
+      var factory = {};
+      var orders = [];
+
+      factory.index = function(callback) {
+        $http.get('/orders').success(function(output){
+          orders = output;
+          callback(orders);
+        });
+      }
+
+      factory.addorder = function(info, callback){
+        $http.post('/orders', info).success(function(output){
+          factory.index(callback);
+          orders=output;
+          callback(orders);
+        });
+      }
+      
+
+      return factory;
+    })
+
+
+    </script>
+</head>
+<body>
+  <!-- <div ng-app="mini_mean"> -->
+    <a href="#/products">Products</a> | <a href="#/orders">Orders</a> | <a href="#/customers">Customers</a> 
+        <div ng-view="">
+        </div>
+ <!--  </div>   -->
+</body>
+</html>
