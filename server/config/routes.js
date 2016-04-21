@@ -10,9 +10,12 @@ var products = require('./../controllers/products.js');
 			customers.addcustomer(req, res);
 		});
 		app.get('/orders', function(req, res){
+			// console.log(res.body);
 			orders.index(req, res);
 		})
 		app.post('/orders', function(req, res){
+			console.log("OMG!!!");
+			console.log(req.body.prod);
 			orders.addorder(req, res);
 		})
 		app.post('/products', function(req, res){

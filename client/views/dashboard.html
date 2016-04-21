@@ -1,14 +1,39 @@
-<div ng-controller="dash">
+<style type="">
+#products{
+	display: inline-block;
+	margin-right: 5px;
+}
+img{
+	width: 100px;
+	height: 100px;
+
+}
+</style>
+<div ng-controller="DashController">
 	<div id="search">
 		<form>
 			<input type="text" placeholder="search" ng-model="product_filter">
 			<input type="submit" value="Filter" ng-click="filter_prod()">
 		</form>
 	</div>
-	<div id="products">
+	<div id="products" ng-repeat="product in products">
+		<div class="prod">
+			<img src="{{product.img}}">
+			<p>{{product.name}} </p>
+		</div>
 	</div>
 	<div id="recent_orders">
+		<div class="orders">
+			<ul ><h3>Recent Orders</h3>
+				<li ng-repeat="order in orders | orderBy: '-created_at'">{{order.name}} purchased {{order.quan}} {{order.prod}}s</li>
+			</ul>
+		</div>
 	</div>
 	<div id="new_customers">
+		<ul><h3>New Customers</h3>
+			<li ng-repeat="customer in customers| orderBy: '-created_at' | limitTo: 3">{{customer.name}} joined the store</li>
+			
+		</ul>
+
 	</div>
 </div>

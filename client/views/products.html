@@ -6,7 +6,7 @@
 		<h3>Add a new product</h3>
 		<form>
 			<p>Name: <input type="text" ng-model="new_product.name" placeholder="name"></p>
-			<p>Image (url): <input type="text" ng-model="new_product.image" placeholder="http://"></p>
+			<p>Image (url): <input type="text" ng-model="new_product.img" placeholder="http://"></p>
 			<p>Description: <textarea ng-model="new_product.desc" placeholder="About product"></textarea></p>
 			<p>Initial Quantity:  <select ng-model="new_product.quan">
 					<option ng-repeat="quan in quantity">{{quan}}</option>

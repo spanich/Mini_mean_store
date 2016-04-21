@@ -19,18 +19,40 @@
         .when('/customers', {
           templateUrl: '/views/customers.html'
         })
-        .otherwise({
+        .when('/', {
+          templateUrl: '/views/dashboard.html'
+        })
+        .otherwise( {
           redirectTo: '/'
         })
     });
 
     //DashController
+    mini_mean.controller("DashController", function($scope, CustomerFactory, OrderFactory, ProductFactory){
+      $scope.products = [];
+      $scope.orders = [];
+      $scope.customers = [];
+
+      ProductFactory.index(function(data){
+        $scope.products=data;
+        // console.log(data);
+      })
+
+      OrderFactory.index(function(data){
+        $scope.orders=data;
+      })
+
+      CustomerFactory.index(function(data){
+        $scope.customers= data;
+      })
+    })
     
     //CustomersController
     mini_mean.controller("CustomersController", function($scope, CustomerFactory){
         $scope.customers = [];
-
+        console.log("hello from the red rock!");
       CustomerFactory.index(function(data){
+        console.log(data);
         $scope.customers = data;
       })
 
@@ -53,21 +75,21 @@
         $scope.products = [];
         $scope.quantity = ["0", "1", "2", "3", "4", "5"];
 
-      ProductFactory.index(function(data){
-        $scope.products = data;
+      // ProductFactory.index(function(data){
+      //   $scope.products = data;
        
-      })
+      // })
       
       // $scope.getproduct = function (){
         
       // }
 
       $scope.addproduct = function(){
-        // console.log($scope.new_product);
+        console.log($scope.new_product);
         ProductFactory.addproduct($scope.new_product, function(data){
-          ProductFactory.index(function(data){
-            $scope.products=data;
-          });
+          // ProductFactory.index(function(data){
+          //   $scope.products=data;
+          // });
           $scope.new_product ={};
         });
       }
@@ -76,7 +98,7 @@
 
     // OrdersController
 
-    mini_mean.controller("OrdersController", function($scope, OrderFactory, CustomerFactory){
+    mini_mean.controller("OrdersController", function($scope, OrderFactory, CustomerFactory, ProductFactory){
       $scope.orders = [];
       $scope.customers=[];
       $scope.prod=[];
@@ -84,7 +106,8 @@
 
       OrderFactory.index(function(data){
         $scope.orders = data;
-        $scope.prod = ["Sneakers", "Apple", "Hat"];
+        // console.log(data);
+        $scope.prod = [];
         $scope.quantity = ["0", "1", "2", "3", "4", "5"];
       });
 
@@ -92,19 +115,23 @@
         $scope.customers = data;
       })
 
+      ProductFactory.index(function(data){
+        $scope.prod = data;
+      })
+
       $scope.getorder= function(){
         [];
       }
 
       $scope.addorder = function(){
-          // console.log($scope.order);
+          console.log($scope.order);
           OrderFactory.addorder($scope.order, function(data){
           // $scope.orders = data;
             OrderFactory.index(function(data){
              $scope.orders = data;
             });
             $scope.order={};
-          })
+          });
       }
     })
 
@@ -142,19 +169,22 @@
       var products = [];
 
       factory.index = function(callback) {
+        // console.log("hello");
         $http.get('/products').success(function(output){
           products = output;
+          // console.log(output);
           callback(products);
         });
       }
 
       factory.addproduct = function(info, callback){
+        console.log(info);
 
         $http.post('/products', info).success(function(output){
-          console.log(info);
-          factory.index(callback);
-          products=output;
-          callback(products);
+          // console.log(info);
+          // factory.index(callback);
+          // products=output;
+          callback();
         })
       }
 
@@ -170,12 +200,14 @@
 
       factory.index = function(callback) {
         $http.get('/orders').success(function(output){
+          // console.log(output);
           orders = output;
           callback(orders);
         });
       }
 
       factory.addorder = function(info, callback){
+        console.log(info);
         $http.post('/orders', info).success(function(output){
           factory.index(callback);
           orders=output;
